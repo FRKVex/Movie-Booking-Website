@@ -1,0 +1,154 @@
+class change css:
+<li class="dropdown<?php if ($selected == "profile") echo ' active'; ?>">
+
+public function generateSeats(){
+            $con = $this->con();
+            $sql = "SELECT * FROM `tbl_booking`";
+            $data = $con->prepare($sql);
+            $data->execute();
+            $result = $data->fetchAll(PDO::FETCH_ASSOC);
+            $row = array('A', 'B', 'C', 'D');
+
+            echo '<div class="cinemaSeats-row">';
+            foreach ($row as $i => $row){
+                if($i > 0 && $i % 1 == 0){
+                    echo '</div><div class="cinemaSeats-row">';
+                }
+
+                echo '<div class="seatCharts-cell">'.$row.'</div>';
+                foreach ($result as $i => $data){
+                if($i % 4 == 0){
+                    echo "<div id='$data[id]' role='checkbox' aria-checked='false' focusable='true' class='seatCharts-seat seatCharts-cell seat-class $data[status]'>$data[seat_no]</div>";
+                }else{
+                    echo "<div id='$data[id]' role='checkbox' aria-checked='false' focusable='true' class='seatCharts-seat seatCharts-cell seat-class $data[status]'>$data[seat_no]</div>";
+                }       
+            }   
+            }
+            echo '</div>';
+        }
+
+
+        public function generateSeats(){
+            $con = $this->con();
+            $sql = "SELECT * FROM `tbl_booking`";
+            $data = $con->prepare($sql);
+            $data->execute();
+            $result = $data->fetchAll(PDO::FETCH_ASSOC);
+            $row = array('A', 'B', 'C', 'D');
+
+            echo '<div class="cinemaSeats-row">';
+            foreach ($row as $i => $row){
+                if($i > 0 && $i % 1 == 0){
+                    echo '</div><div class="cinemaSeats-row">';
+                }
+
+                echo '<div class="seatCharts-cell">'.$row.'</div>';
+                foreach ($result as $data){
+                   echo "<input id='$data[id]' type='checkbox' class='seatCharts-seat seatCharts-cell seat-class $data[status]' name='seats[]' value='$data[seat_no]'>";
+                }   
+            }
+            echo '</div>';
+        }
+
+        <script>
+      $(document).ready(function() {
+          $('.seatCharts-seat').click(function(){
+            var id = $("#id").val();
+
+            $.ajax({
+                type: 'post',
+                url: 'seats.php',
+                data: {
+                    id: id        },
+                success: function(data) {
+                    if (data == 'ok') {
+                        alert('All good. Everything saved!');
+                    } else {
+                        alert('something went wrong...');
+                    } 
+                }
+            }); 
+          });
+      });
+    </script>
+    
+    <script>
+      $(document).ready(function() {
+          $('.seatCharts-seat').click(function(){ 
+            id = jQuery(this).attr("id");          
+            $.ajax({ 
+                    type: "POST", 
+                    url: "class/booking.php", 
+                    data: id,
+                    success: function(data){
+                      alert(id);
+                    }
+              });
+          });
+      });
+    </script>
+
+    <script>
+      $(document).ready(function() {
+          $('.seatCharts-seat').click(function(){ 
+            var id = jQuery(this).attr("id");          
+            
+            $.post("class/booking.php",
+            {
+              id:id
+            },
+            function(data, status){
+              console.log('data',data);
+              console.log('status',status);
+            });
+          });
+      });
+    </script>
+
+    code = jQuery(this).attr("id");
+              ids.push(code);
+              $div.append(code + "<br />");
+              console.log(code);
+
+              <script>
+			var i;
+			var ids = [];
+			$seatid = ids;
+			$(document).ready(function() {
+				var htmlString;
+				var element = document.getElementById("select-seat");
+				$('.seat').click(function(){
+					var id = jQuery(this).attr("id");
+					if ($(this).hasClass('available') && !$(this).hasClass('selected')){
+						ids.push(id);
+						htmlString += `<div id="${id}">${id}</div>`
+						document.getElementById("select-seat").innerHTML = htmlString
+						console.log(ids);
+					}else if($(this).hasClass('selected')){
+						if(ids.indexOf(id) > -1) {
+							i = ids.indexOf(id);
+							ids.splice(i, 1)
+							console.log(ids);
+						}
+					}                     
+				});
+			});
+
+			$('#save').click(function(){
+				$date = document.getElementById("myDate").value;
+			  	$time = document.getElementById("myTime").value;
+			  	console.log($date);
+			  	console.log($time);
+				$.post("class/myAjaxHandler.php", 
+				{ 
+					seatid: $seatid,
+					time: $time,
+					date: $date
+					
+				}, 
+					function(data, status){
+					console.log('data',data);
+					console.log('status',status);
+				});
+			});
+		</script>
